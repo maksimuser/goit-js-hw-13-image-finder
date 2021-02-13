@@ -6,18 +6,17 @@ import loadMoreBtn from './js/load-more-btn';
 
 const debounce = require('lodash.debounce');
 
-refs.searchForm.addEventListener(
-  'input',
-  debounce(() => {
-    apiService.query = refs.searchForm.query.value;
+const debouncedInput = debounce(() => {
+  apiService.query = refs.searchForm.query.value;
 
-    handlerClean();
+  handlerClean();
 
-    apiService.resetPage();
+  apiService.resetPage();
 
-    getImages();
-  }, 1000),
-);
+  getImages();
+}, 1000);
+
+refs.searchForm.addEventListener('input', debouncedInput);
 
 refs.loadMoreBtn.addEventListener('click', getImages);
 
