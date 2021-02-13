@@ -1,25 +1,23 @@
+import './sass/styles.scss';
 import refs from './js/refs';
 import apiService from './js/api-service';
 import renderMarkup from './js/render-markup';
-
 import loadMoreBtn from './js/load-more-btn';
-
-import './sass/styles.scss';
 
 const debounce = require('lodash.debounce');
 
-const debouncedInputCallback = debounce(() => {
-  const form = refs.searchForm;
-  apiService.query = form.elements.query.value;
+refs.searchForm.addEventListener(
+  'input',
+  debounce(() => {
+    apiService.query = refs.searchForm.query.value;
 
-  clearMarkup();
-  form.reset();
+    handlerClean();
 
-  apiService.resetPage();
-  getImages();
-}, 500);
+    apiService.resetPage();
 
-refs.searchForm.addEventListener('input', debouncedInputCallback);
+    getImages();
+  }, 1000),
+);
 
 refs.loadMoreBtn.addEventListener('click', getImages);
 
@@ -38,6 +36,7 @@ function getImages() {
   });
 }
 
-export default function clearMarkup() {
-  refs.imagesContainer.innerHTML = '';
+function handlerClean() {
+  refs.galleryRoot.innerHTML = '';
+  refs.searchForm.reset();
 }

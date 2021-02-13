@@ -1,8 +1,9 @@
+import imagesTpl from '../templates/images.hbs';
 import refs from './refs';
-import imagesTpl from '../templates/markup-images.hbs';
 
-function renderMarkup(images) {
-  const markup = imagesTpl(images);
-  refs.imagesContainer.insertAdjacentHTML('beforeend', markup);
+function renderMarkup(data) {
+  const markup = imagesTpl(data);
+  refs.galleryRoot.insertAdjacentHTML('beforeend', markup);
 }
+
 export default renderMarkup;
