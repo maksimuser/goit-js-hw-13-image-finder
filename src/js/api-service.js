@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 const apiKey = '20233756-b895373d2640f193f5e1d61a5';
 
 export default {
