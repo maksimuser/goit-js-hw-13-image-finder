@@ -4,37 +4,71 @@ import apiService from './js/api-service';
 import renderMarkup from './js/render-markup';
 import loadMoreBtn from './js/load-more-btn';
 import PNotify from './js/notifications';
-import './js/modal';
+
 import debounce from 'lodash.debounce';
 
+PNotify.info({
+  text: 'Hello) Enter your request!',
+  shadow: true,
+  delay: 3000,
+});
 const debouncedInput = debounce(() => {
   apiService.query = refs.searchForm.query.value;
 
-  handlerClean();
-
   apiService.resetPage();
 
-  PNotify.success({
-    text: `we found images with "${apiService.query}"`,
-    shadow: true,
-    delay: 2500,
-  });
-  getImages();
+  clearMarkup();
+
+  getImagesOnClick();
 }, 1000);
 
 refs.searchForm.addEventListener('input', debouncedInput);
 
-refs.loadMoreBtn.addEventListener('click', getImages);
+refs.loadMoreBtn.addEventListener('click', getImagesOnClick);
 
-function getImages() {
+function getImagesOnClick() {
   loadMoreBtn.disable();
 
   apiService.fetchImages().then(data => {
+    if (apiService.query === '') {
+      loadMoreBtn.hide();
+      PNotify.notice({
+        text: 'Please, enter your request!',
+        shadow: true,
+        delay: 3000,
+      });
+      return;
+    } else if (!data.length) {
+      loadMoreBtn.show();
+      PNotify.error({
+        text: `Oops. Something went wrong. Please, enter correct request!`,
+        shadow: true,
+        delay: 3000,
+      });
+      return;
+    }
+
+    if (data.length < 12) {
+      renderMarkup(data);
+      loadMoreBtn.hide();
+      PNotify.notice({
+        text: 'It is all at your request!',
+        shadow: true,
+        delay: 3000,
+      });
+      return;
+    }
+
+    PNotify.success({
+      text: 'Your request :)',
+      shadow: true,
+      delay: 3000,
+    });
+
     renderMarkup(data);
 
-    loadMoreBtn.show();
     loadMoreBtn.enable();
-
+    loadMoreBtn.show();
     window.scrollTo({
       top: document.documentElement.offsetHeight,
       behavior: 'smooth',
@@ -42,7 +76,6 @@ function getImages() {
   });
 }
 
-function handlerClean() {
+export default function clearMarkup() {
   refs.galleryRoot.innerHTML = '';
-  refs.searchForm.reset();
 }

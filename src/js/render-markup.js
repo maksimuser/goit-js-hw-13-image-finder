@@ -1,10 +1,11 @@
-import MicroModal from 'micromodal';
 import imagesTpl from '../templates/images.hbs';
+import MicroModal from 'micromodal';
 
 import refs from './refs';
 
 function renderMarkup(data) {
   const markup = imagesTpl(data);
+
   refs.galleryRoot.insertAdjacentHTML('beforeend', markup);
 
   refs.galleryRoot.addEventListener('click', openModal);
