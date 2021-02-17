@@ -33,7 +33,7 @@ function getImagesOnClick() {
     if (apiService.query === '') {
       loadMoreBtn.hide();
       PNotify.notice({
-        text: 'Please, enter your request!',
+        text: 'Please, enter request!',
         shadow: true,
         delay: 3000,
       });
