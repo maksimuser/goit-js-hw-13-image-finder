@@ -6,13 +6,16 @@ import loadMoreBtn from './js/load-more-btn';
 import PNotify from './js/notifications';
 import debounce from 'lodash.debounce';
 
+refs.searchForm.addEventListener('submit', handlerInputForm);
+
 const debouncedInput = debounce(() => {
   apiService.query = refs.searchForm.query.value.trim();
 
   apiService.resetPage();
 
   clearMarkup();
-  if (apiService.query === '') {
+
+  if (!apiService.query) {
     loadMoreBtn.hide();
     PNotify.notice({
       text: 'Please, enter request!',
@@ -21,10 +24,11 @@ const debouncedInput = debounce(() => {
     });
     return;
   }
+
   PNotify.success({
     text: `Your request ${apiService.query}`,
     shadow: true,
-    delay: 3000,
+    delay: 2000,
   });
 
   getImagesOnClick();
@@ -39,14 +43,14 @@ function getImagesOnClick() {
 
   apiService.fetchImages().then(data => {
     if (!data.length) {
-      loadMoreBtn.show();
       PNotify.error({
         text: `Oops. Something went wrong. Please, enter correct request!`,
         shadow: true,
         delay: 3000,
       });
       return;
-    } else if (data.length < 12) {
+    }
+    if (data.length < 12) {
       renderMarkup(data);
       loadMoreBtn.hide();
       PNotify.notice({
@@ -57,16 +61,19 @@ function getImagesOnClick() {
       return;
     }
 
-    const NUMBER = 52;
-    const beforeRenderMarkup = document.documentElement.offsetHeight;
+    const HEIGHT_CORRECTION = 42;
+    const heightBeforeRenderMarkup = document.documentElement.offsetHeight;
 
     renderMarkup(data);
 
-    const afterRenderMarkup = document.documentElement.offsetHeight;
+    const scrollHeight =
+      document.documentElement.offsetHeight -
+      (document.documentElement.offsetHeight -
+        heightBeforeRenderMarkup +
+        HEIGHT_CORRECTION);
 
     window.scrollTo({
-      top:
-        afterRenderMarkup - (afterRenderMarkup - beforeRenderMarkup + NUMBER),
+      top: scrollHeight,
     });
 
     loadMoreBtn.enable();
@@ -74,6 +81,10 @@ function getImagesOnClick() {
   });
 }
 
-export default function clearMarkup() {
+function clearMarkup() {
   refs.galleryRoot.innerHTML = '';
+}
+
+function handlerInputForm(event) {
+  event.preventDefault();
 }
