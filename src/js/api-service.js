@@ -10,6 +10,11 @@ export default {
 
     try {
       const res = await axios.get();
+
+      if (res.status !== 200) {
+        throw new Error('error');
+      }
+
       const data = res.data.hits;
 
       this.incrementPage();
@@ -17,7 +22,7 @@ export default {
       return data;
     } catch (error) {
       console.log(error);
-      throw error;
+      throw new Error('Error fetching data');
     }
   },
 
