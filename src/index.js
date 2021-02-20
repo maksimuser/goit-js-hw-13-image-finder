@@ -61,16 +61,10 @@ function getImagesOnClick() {
       return;
     }
 
-    const HEIGHT_CORRECTION = 42;
-    const heightBeforeRenderMarkup = document.documentElement.offsetHeight;
+    const scrollHeight =
+      refs.galleryRoot.offsetHeight + refs.galleryRoot.offsetTop;
 
     renderMarkup(data);
-
-    const scrollHeight =
-      document.documentElement.offsetHeight -
-      (document.documentElement.offsetHeight -
-        heightBeforeRenderMarkup +
-        HEIGHT_CORRECTION);
 
     window.scrollTo({
       top: scrollHeight,
